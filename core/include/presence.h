@@ -8,8 +8,8 @@
  * can be an edge or a vertex.
  */
 
-
-typedef struct presence_function {
+typedef struct presence_function
+{
     /**
      * This structure abstarct the presence function.
      * 
@@ -42,6 +42,6 @@ bool is_present(presence_function *p, unsigned long t);
  * or "false" otherwise.
  */
 bool str_to_periodic_pattern(char str_pattern[],
-                             unsigned char * formatted_pattern);
+                             unsigned char *formatted_pattern);
 
 #endif
