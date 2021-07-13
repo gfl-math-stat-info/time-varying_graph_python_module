@@ -10,6 +10,12 @@ struct edge
     int to;
 };
 
+char* concat(char* stringStart, char* stringEnd){
+	char *result = malloc(strlen(stringStart) + strlen(stringEnd) + 1);
+	strcpy(result, stringStart);
+    strcat(result, stringEnd);
+}
+
 /* main() returns int, not void. */
 int main(int argc, char *argv[] ) {
 	
@@ -18,11 +24,11 @@ int main(int argc, char *argv[] ) {
 		return 1;
 	}
 	char showgStringCall[] = "./G6_Deserializer.exe -e ";
-	char *result = malloc(strlen(showgStringCall) + strlen(argv[1]) + 1);
-	strcpy(result, showgStringCall);
-    strcat(result, argv[1]);
+	char *result = concat(showgStringCall, argv[1]);
+
 	FILE *fp;
-	char line[1035];
+	char* line = NULL;
+	size_t size = 0;
 	
 	fp = popen(result, "r");
 	if (fp == NULL) {
@@ -34,12 +40,12 @@ int main(int argc, char *argv[] ) {
 	struct edge* edges;
 	int edgeCount = 0;
 	/* Read the output a line at a time - output it. */
-	while (fgets(line, sizeof(line), fp) != NULL) {
+	while (getline(&line, &size, fp) != -1) {
 		if (strstr(line, "Graph") == NULL) {
 			if(line[0] == '\n') {
-				
+				//New graph
 			}
-			else if(edgesNumber == -1){
+			else if(edgesNumber == -1){ //Begining of the edge list
 				int j = 0;
 				while(isdigit(line[j++]));
 				char edgCnt[2];
@@ -73,13 +79,14 @@ int main(int argc, char *argv[] ) {
 						else {
 							printf("Showg format error\n" );
 						}
-						//printf("(%d, %d)\n", edges[edgeCount].from, edges[edgeCount].to);
 						edgeCount++;
 					}
 				}
 				break;
 			}
 		}  
+		free(line);
+		line = NULL;
 	}
 	fclose(fp);
 	free(result);
@@ -112,3 +119,4 @@ int main(int argc, char *argv[] ) {
 	free(edges);
 	return 0;
 }
+
